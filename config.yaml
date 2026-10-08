@@ -1,0 +1,45 @@
+program: acme
+
+scope:
+  in:
+    - "*.acme.com"
+    - "acme.io"
+  out:
+    - "blog.acme.com"
+    - "*.dev.acme.com"
+
+database: recon.db
+
+# Identificação do pesquisador. Programas pedem isso p/ NÃO te bloquear o IP e
+# pra atribuir o tráfego a você. Aplicado em httpx, nuclei, fetch de JS e probes.
+http:
+  user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"   # troque SEU_HANDLE
+  extra_headers:
+    # alguns programas exigem um header específico — descomente e ajuste:
+    X-Bug-Bounty: SEU_HANDLE
+    # X-HackerOne-Research: SEU_HANDLE
+
+# nome/caminho de cada binário. Mude se não estiverem no PATH com nome padrão.
+tools:
+  subfinder: /root/go/bin/subfinder
+  dnsx: /usr/bin/dnsx
+  httpx: /root/go/bin/httpx
+  gau: /usr/bin/gau
+  nuclei: /usr/bin/nuclei
+
+nuclei:
+  severity: "low,medium,high,critical"
+  rate_limit: 150
+  # templates: "/home/voce/nuclei-templates-custom"   # seu edge vai aqui
+
+js_secrets:
+  binary: ./engine/js-secrets/target/release/js-secrets
+  workdir: .recon-js
+  fetch_concurrency: 20
+  entropy: false   # ligue para o fallback de entropia (mais ruído)
+
+verify:
+  concurrency: 8   # probes read-only simultâneos contra APIs de provider
+
+notify:
+  discord_webhook: ""   # cole o webhook p/ receber só as novidades

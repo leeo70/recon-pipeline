@@ -1,0 +1,25 @@
+# build
+engine/js-secrets/target/
+__pycache__/
+*.pyc
+
+# dados de recon e saidas: NUNCA commitar
+.recon-js/
+*.db
+*.sqlite
+*.sqlite3
+ward/
+
+# configs reais de programa (so o template vai pro repo)
+programas/*.yaml
+!programas/template.yaml
+programas/*.yaml.bak
+
+# dashboard local (viewer pessoal)
+dashboard.html
+
+# editores / backups
+.vscode/
+.claude/
+.idea/
+*.bak

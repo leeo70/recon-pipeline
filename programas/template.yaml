@@ -1,0 +1,48 @@
+# Template de config de recon — copie e ajuste, ou use `python -m recon.init`.
+# Cada chave abaixo tem um comentário do que ela faz e quando mexer.
+
+program: NOME_DO_PROGRAMA          # vira o nome do .db e a tag dos achados
+
+scope:
+  in:
+    # Host SEM wildcard -> varrido direto (seed). Use p/ alvo específico.
+    - "app.exemplo.com"
+    # Com '*.' -> enumeração passiva expande p/ todos os subdomínios.
+    # - "*.exemplo.com"
+  out: []                          # padrões a excluir; o filtro já dropa o resto
+    # - "blog.exemplo.com"
+    # - "*.dev.exemplo.com"
+
+database: programa.db
+
+# Identificação: programas pedem isso p/ não bloquear seu IP e atribuir o teste.
+http:
+  user_agent: "bug-bounty-recon (handle: SEU_HANDLE)"
+  extra_headers: {}
+    # Descomente se o programa exigir um header específico:
+    # X-Bug-Bounty: SEU_HANDLE
+
+tools:                             # mude só se o binário tiver outro nome/caminho
+  subfinder: subfinder
+  dnsx: dnsx
+  httpx: httpx
+  gau: gau
+  nuclei: nuclei
+
+nuclei:
+  severity: "low,medium,high,critical"   # tire 'info' se a maioria for OOS
+  rate_limit: 50                          # suba só se o programa permitir
+  exclude_tags: "ssl,dos,fuzz"            # categorias tipicamente fora de escopo
+  # templates: "/caminho/templates-custom"
+
+js_secrets:
+  binary: ./engine/js-secrets/target/release/js-secrets
+  workdir: .recon-js
+  fetch_concurrency: 10
+  entropy: false                   # true = fallback de entropia (mais ruído)
+
+verify:
+  concurrency: 4                   # probes read-only simultâneos
+
+notify:
+  discord_webhook: ""              # cole o webhook p/ receber só as novidades
